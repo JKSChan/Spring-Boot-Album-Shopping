@@ -1,36 +1,38 @@
-package com.jacksonchan.model;
+package com.jacksonchan.dto;
 
 import com.jacksonchan.constant.ProductAlbumType;
 import com.jacksonchan.constant.ProductCategory;
 import com.jacksonchan.constant.ProductShelves;
 
+import javax.validation.constraints.NotNull;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Product {
-
-    private Integer productId;
+public class ProductRequest {
+    @NotNull
     private ProductCategory category;
+    @NotNull
     private ProductAlbumType albumType;
+    @NotNull
     private String singer;
+    @NotNull
     private String productName;
+    @NotNull
     private String imageUrl;
+    @NotNull
     private String barcode;
+    @NotNull
     private String company;
+    @NotNull
     private Date issueDate;
     private String description;
+    @NotNull
     private Integer price;
+    @NotNull
     private Integer stock;
+    @NotNull
     private ProductShelves shelves;
-    private Date createdDate;
-    private Date lastModifiedDate;
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
 
     public ProductCategory getCategory() {
         return category;
@@ -126,21 +128,5 @@ public class Product {
 
     public void setShelves(ProductShelves shelves) {
         this.shelves = shelves;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public Date getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(Date lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
     }
 }

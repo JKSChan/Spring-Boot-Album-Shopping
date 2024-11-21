@@ -1,12 +1,17 @@
 package com.jacksonchan.dao.impl;
 
 import com.jacksonchan.dao.ProductDao;
+import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 import com.jacksonchan.rowmapper.ProductRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +23,10 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Product getProductById(Integer productId) {
-        String sql = "SELECT product_id,product_name,category,image_url,price,stock,description,created_date,last_modified_date FROM product WHERE product_id = :productId";
+        String sql = "SELECT product_id,category,album_type,singer,product_name,image_url,barcode,company," +
+                "issue_date,description,price,stock,shelves,created_date,last_modified_date " +
+                "FROM product " +
+                "WHERE product_id = :productId";
 
         Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
@@ -30,5 +38,40 @@ public class ProductDaoImpl implements ProductDao {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Integer createProduct(ProductRequest productRequest) {
+        String sql = "INSERT INTO product(category,album_type,singer,product_name,image_url,barcode,company," +
+                "issue_date,description,price,stock,shelves,created_date,last_modified_date) " +
+                "VALUES (:category, :albumType, :singer, :productName, :imageUrl, :barcode, :company, :issueDate, :description, " +
+                ":price, :stock, :shelves, :createdDate, :lastModifiedDate)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("category", productRequest.getCategory().toString());
+        map.put("albumType", productRequest.getAlbumType().toString());
+        map.put("singer", productRequest.getSinger());
+        map.put("productName", productRequest.getProductName());
+        map.put("imageUrl", productRequest.getImageUrl());
+        map.put("barcode", productRequest.getBarcode());
+        map.put("company", productRequest.getCompany());
+        map.put("issueDate", productRequest.getIssueDate());
+        map.put("description", productRequest.getDescription());
+        map.put("price", productRequest.getPrice());
+        map.put("stock", productRequest.getStock());
+        map.put("shelves", productRequest.getShelves().toString());
+
+        Date now = new Date();
+        map.put("createdDate", now);
+        map.put("lastModifiedDate", now);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
+
+        int productId = keyHolder.getKey().intValue();
+
+        return productId;
+
     }
 }
