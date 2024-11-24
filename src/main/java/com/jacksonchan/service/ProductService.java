@@ -3,7 +3,11 @@ package com.jacksonchan.service;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 
+import java.util.List;
+
 public interface ProductService {
+
+    List<Product> getProducts();
 
     Product getProductById(Integer productId);
 

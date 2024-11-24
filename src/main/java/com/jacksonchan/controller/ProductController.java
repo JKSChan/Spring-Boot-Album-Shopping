@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class ProductController {
@@ -16,8 +17,17 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @GetMapping("/products")
+    public ResponseEntity<List<Product>> getProducts() {
+        //查詢列表的功能，不管有沒有數據都需回傳200
+        List<Product> productList = productService.getProducts();
+
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
+    }
+
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {
+        //查詢單個數據，就需做數據null判斷
         Product product = productService.getProductById(productId);
 
         if (product != null) {
