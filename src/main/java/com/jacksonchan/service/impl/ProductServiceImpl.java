@@ -1,5 +1,7 @@
 package com.jacksonchan.service.impl;
 
+import com.jacksonchan.constant.ProductAlbumType;
+import com.jacksonchan.constant.ProductCategory;
 import com.jacksonchan.dao.ProductDao;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
@@ -16,8 +18,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
+    public List<Product> getProducts(ProductCategory category, ProductAlbumType albumType, String singerSearch, String productNameSearch) {
+        return productDao.getProducts(category, albumType, singerSearch, productNameSearch);
     }
 
     @Override

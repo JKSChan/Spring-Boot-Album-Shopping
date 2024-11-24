@@ -1,5 +1,7 @@
 package com.jacksonchan.dao.impl;
 
+import com.jacksonchan.constant.ProductAlbumType;
+import com.jacksonchan.constant.ProductCategory;
 import com.jacksonchan.dao.ProductDao;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
@@ -22,12 +24,32 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category, ProductAlbumType albumType, String singerSearch, String productNameSearch) {
         String sql = "SELECT product_id,category,album_type,singer,product_name,image_url,barcode,company," +
                 "issue_date,description,price,stock,shelves,created_date,last_modified_date " +
-                "FROM product ";
+                "FROM product WHERE 1=1 ";
 
         Map<String, Object> map = new HashMap<>();
+
+        if (category != null) {
+            sql = sql + "AND category = :category ";
+            map.put("category", category.name());
+        }
+
+        if (albumType != null) {
+            sql = sql + "AND album_type = :albumType ";
+            map.put("albumType", albumType.name());
+        }
+
+        if (singerSearch != null) {
+            sql = sql + "AND singer LIKE :singerSearch ";
+            map.put("singerSearch", "%" + singerSearch + "%");
+        }
+
+        if (productNameSearch != null) {
+            sql = sql + "AND product_name LIKE :productNameSearch ";
+            map.put("productNameSearch", "%" + productNameSearch + "%");
+        }
 
         List<Product> productsList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
 

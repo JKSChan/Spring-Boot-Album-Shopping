@@ -1,5 +1,7 @@
 package com.jacksonchan.controller;
 
+import com.jacksonchan.constant.ProductAlbumType;
+import com.jacksonchan.constant.ProductCategory;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 import com.jacksonchan.service.ProductService;
@@ -18,9 +20,13 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) ProductAlbumType albumType,
+            @RequestParam(required = false) String singerSearch,
+            @RequestParam(required = false) String productNameSearch) {
         //查詢列表的功能，不管有沒有數據都需回傳200
-        List<Product> productList = productService.getProducts();
+        List<Product> productList = productService.getProducts(category, albumType, singerSearch, productNameSearch);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
