@@ -22,10 +22,15 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts(
+            // 查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) ProductAlbumType albumType,
             @RequestParam(required = false) String singerSearch,
-            @RequestParam(required = false) String productNameSearch) {
+            @RequestParam(required = false) String productNameSearch,
+
+            // 排序 Sorting
+            @RequestParam(defaultValue = "created_date") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort) {
 
         ProductQueryParams productQueryParams = new ProductQueryParams();
 
@@ -33,6 +38,8 @@ public class ProductController {
         productQueryParams.setAlbumType(albumType);
         productQueryParams.setSingerSearch(singerSearch);
         productQueryParams.setProductNameSearch(productNameSearch);
+        productQueryParams.setOrderBy(orderBy);
+        productQueryParams.setSort(sort);
 
         //查詢列表的功能，不管有沒有數據都需回傳200
         List<Product> productList = productService.getProducts(productQueryParams);
