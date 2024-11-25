@@ -1,8 +1,7 @@
 package com.jacksonchan.dao.impl;
 
-import com.jacksonchan.constant.ProductAlbumType;
-import com.jacksonchan.constant.ProductCategory;
 import com.jacksonchan.dao.ProductDao;
+import com.jacksonchan.dto.ProductQueryParams;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 import com.jacksonchan.rowmapper.ProductRowMapper;
@@ -24,31 +23,31 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public List<Product> getProducts(ProductCategory category, ProductAlbumType albumType, String singerSearch, String productNameSearch) {
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
         String sql = "SELECT product_id,category,album_type,singer,product_name,image_url,barcode,company," +
                 "issue_date,description,price,stock,shelves,created_date,last_modified_date " +
                 "FROM product WHERE 1=1 ";
 
         Map<String, Object> map = new HashMap<>();
 
-        if (category != null) {
+        if (productQueryParams.getCategory() != null) {
             sql = sql + "AND category = :category ";
-            map.put("category", category.name());
+            map.put("category", productQueryParams.getCategory().name());
         }
 
-        if (albumType != null) {
+        if (productQueryParams.getAlbumType() != null) {
             sql = sql + "AND album_type = :albumType ";
-            map.put("albumType", albumType.name());
+            map.put("albumType", productQueryParams.getAlbumType().name());
         }
 
-        if (singerSearch != null) {
+        if (productQueryParams.getSingerSearch() != null) {
             sql = sql + "AND singer LIKE :singerSearch ";
-            map.put("singerSearch", "%" + singerSearch + "%");
+            map.put("singerSearch", "%" + productQueryParams.getSingerSearch() + "%");
         }
 
-        if (productNameSearch != null) {
+        if (productQueryParams.getProductNameSearch() != null) {
             sql = sql + "AND product_name LIKE :productNameSearch ";
-            map.put("productNameSearch", "%" + productNameSearch + "%");
+            map.put("productNameSearch", "%" + productQueryParams.getProductNameSearch() + "%");
         }
 
         List<Product> productsList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());

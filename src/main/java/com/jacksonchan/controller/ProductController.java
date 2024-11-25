@@ -2,6 +2,7 @@ package com.jacksonchan.controller;
 
 import com.jacksonchan.constant.ProductAlbumType;
 import com.jacksonchan.constant.ProductCategory;
+import com.jacksonchan.dto.ProductQueryParams;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 import com.jacksonchan.service.ProductService;
@@ -25,8 +26,16 @@ public class ProductController {
             @RequestParam(required = false) ProductAlbumType albumType,
             @RequestParam(required = false) String singerSearch,
             @RequestParam(required = false) String productNameSearch) {
+
+        ProductQueryParams productQueryParams = new ProductQueryParams();
+
+        productQueryParams.setCategory(category);
+        productQueryParams.setAlbumType(albumType);
+        productQueryParams.setSingerSearch(singerSearch);
+        productQueryParams.setProductNameSearch(productNameSearch);
+
         //查詢列表的功能，不管有沒有數據都需回傳200
-        List<Product> productList = productService.getProducts(category, albumType, singerSearch, productNameSearch);
+        List<Product> productList = productService.getProducts(productQueryParams);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
