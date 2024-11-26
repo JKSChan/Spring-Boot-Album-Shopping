@@ -30,25 +30,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql = sql + "AND category = :category ";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getAlbumType() != null) {
-            sql = sql + "AND album_type = :albumType ";
-            map.put("albumType", productQueryParams.getAlbumType().name());
-        }
-
-        if (productQueryParams.getSingerSearch() != null) {
-            sql = sql + "AND singer LIKE :singerSearch ";
-            map.put("singerSearch", "%" + productQueryParams.getSingerSearch() + "% ");
-        }
-
-        if (productQueryParams.getProductNameSearch() != null) {
-            sql = sql + "AND product_name LIKE :productNameSearch ";
-            map.put("productNameSearch", "%" + productQueryParams.getProductNameSearch() + "% ");
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
 
@@ -64,25 +46,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         // 查詢條件
-        if (productQueryParams.getCategory() != null) {
-            sql = sql + "AND category = :category ";
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        if (productQueryParams.getAlbumType() != null) {
-            sql = sql + "AND album_type = :albumType ";
-            map.put("albumType", productQueryParams.getAlbumType().name());
-        }
-
-        if (productQueryParams.getSingerSearch() != null) {
-            sql = sql + "AND singer LIKE :singerSearch ";
-            map.put("singerSearch", "%" + productQueryParams.getSingerSearch() + "% ");
-        }
-
-        if (productQueryParams.getProductNameSearch() != null) {
-            sql = sql + "AND product_name LIKE :productNameSearch ";
-            map.put("productNameSearch", "%" + productQueryParams.getProductNameSearch() + "% ");
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         // 排序
         sql = sql + "ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort() + " ";
@@ -186,5 +150,29 @@ public class ProductDaoImpl implements ProductDao {
         map.put("productId", productId);
 
         namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    private String addFilteringSql(String sql, Map<String, Object> map, ProductQueryParams productQueryParams) {
+
+        if (productQueryParams.getCategory() != null) {
+            sql = sql + "AND category = :category ";
+            map.put("category", productQueryParams.getCategory().name());
+        }
+
+        if (productQueryParams.getAlbumType() != null) {
+            sql = sql + "AND album_type = :albumType ";
+            map.put("albumType", productQueryParams.getAlbumType().name());
+        }
+
+        if (productQueryParams.getSingerSearch() != null) {
+            sql = sql + "AND singer LIKE :singerSearch ";
+            map.put("singerSearch", "%" + productQueryParams.getSingerSearch() + "% ");
+        }
+
+        if (productQueryParams.getProductNameSearch() != null) {
+            sql = sql + "AND product_name LIKE :productNameSearch ";
+            map.put("productNameSearch", "%" + productQueryParams.getProductNameSearch() + "% ");
+        }
+        return sql;
     }
 }
