@@ -6,6 +6,7 @@ import com.jacksonchan.dto.ProductQueryParams;
 import com.jacksonchan.dto.ProductRequest;
 import com.jacksonchan.model.Product;
 import com.jacksonchan.service.ProductService;
+import com.jacksonchan.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             // 查詢條件 Filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) ProductAlbumType albumType,
@@ -52,10 +53,21 @@ public class ProductController {
         productQueryParams.setLimit(limit);
         productQueryParams.setOffset(offset);
 
-        //查詢列表的功能，不管有沒有數據都需回傳200
+        // 查詢列表的功能，不管有沒有數據都需回傳200
+        // 取得 product list
         List<Product> productList = productService.getProducts(productQueryParams);
 
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        // 取得 product 總數
+        Integer total = productService.countProduct(productQueryParams);
+
+        // 分頁
+        Page<Product> page = new Page<>();
+        page.setLimit(limit);
+        page.setOffset(offset);
+        page.setTotal(total);
+        page.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/products/{productId}")
