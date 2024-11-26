@@ -9,12 +9,16 @@ import com.jacksonchan.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
+@Validated
 public class ProductController {
 
     @Autowired
@@ -30,7 +34,12 @@ public class ProductController {
 
             // 排序 Sorting
             @RequestParam(defaultValue = "created_date") String orderBy,
-            @RequestParam(defaultValue = "desc") String sort) {
+            @RequestParam(defaultValue = "desc") String sort,
+
+            // 分頁 Pagination
+            @RequestParam(defaultValue = "4") @Max(50) @Min(0) Integer limit,
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset
+    ) {
 
         ProductQueryParams productQueryParams = new ProductQueryParams();
 
@@ -40,6 +49,8 @@ public class ProductController {
         productQueryParams.setProductNameSearch(productNameSearch);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
         //查詢列表的功能，不管有沒有數據都需回傳200
         List<Product> productList = productService.getProducts(productQueryParams);
